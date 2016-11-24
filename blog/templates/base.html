@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>鱼臭臭的博客(精简版)</title>
+    <link href="static/blog/css/style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="header">
+    <h1>{% block header%}{%endblock%}</h1>
+</div>
+ <div  style="float: left; width: 250px;height: 1000px">
+     {% load staticfiles %}
+       <!-- <img src="{% static "blog/img/gougou.jpg" %}" alt="My image"/ class="index-img"> -->
+        <img src="{% static "blog/img/gougou.jpg" %}" alt="My image"/ >
+        <img src="{% static "blog/img/girlfriend.jpg" %}" alt="My image"/ >
+
+</div>
+{% for blog in blogs %}
+    <div class="blog"  style="float: right; border-left: 60%">
+        <div class="title">
+            <a href=" {% url 'blog_get_detail' blog.id %}"><h2>{{ blog.title }}</h2></a>
+        </div>
+        <div class="info">
+            <span class="category" style="color: #ff9900;">{{ blog.category.name }}</span>
+            <span class="author" style="color: #4a86e8">{{ blog.author }}</span>
+            <span class="created" style="color: #6aa84f">{{ blog.created|date:"Y-m-d H:i" }}</span>
+        </div>
+        <div class="summary" style="background-color: #4a86e8">
+            {{ blog.content|truncatewords:100 }}
+        </div>
+    </div>
+{% endfor %}
+ 
+</body>
+</html>

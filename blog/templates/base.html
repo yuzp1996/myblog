@@ -6,18 +6,19 @@
     <link href="static/blog/css/style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
+
 <div class="header">
     <h1>{% block header%}{%endblock%}</h1>
 </div>
  <div  style="float: left; width: 250px;height: 1000px">
      {% load staticfiles %}
-       <!-- <img src="{% static "blog/img/gougou.jpg" %}" alt="My image"/ class="index-img"> -->
-        <img src="{% static "blog/img/gougou.jpg" %}" alt="My image"/ >
-        <img src="{% static "blog/img/mygirl.jpg" %}" alt="My image"/ >
-        <img src="{% static "blog/img/lovegirl.jpg" %}" alt="My image"/ >
+       <img src="{% static "blog/img/mygirl.jpg" %}" alt="My image"/ class="index-img">
+       <img src="{% static "blog/img/lovegirl.jpg" %}" alt="My image"/ >
 
 
 </div>
+{% load djangomarkdown %}
+
 {% for blog in blogs %}
     <div class="blog"  style="float: right; border-left: 60%">
         <div class="title">
@@ -29,7 +30,8 @@
             <span class="created" style="color: #6aa84f">{{ blog.created|date:"Y-m-d H:i" }}</span>
         </div>
         <div class="summary" style="background-color: #4a86e8">
-            {{ blog.content|truncatewords:100 }}
+            
+            {{ blog.content|djangomarkdown }}
         </div>
     </div>
 {% endfor %}

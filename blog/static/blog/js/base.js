@@ -1,10 +1,13 @@
 $(function(){
 $("#qrcode").click(function()
 	{
+		alert("I fuck you ")
 		address = $("#myqrcode").val();
-		$("#frameId").css("z-index",2);
+		$("#frameId").css("z-index",2);		
 		$("#frameId").attr("src","http://www.yugougou.cn:8001/qrcode/"+address+"");
-    })
+		alert($("#frameId").attr("src"));  
+
+  })
 $(function(){  
     var $backToTopEle = $('.toTop'), $backToTopFun = function() {  
         var st = $(document).scrollTop(), winh = $(window).height();  

@@ -3,7 +3,7 @@ $("#qrcode").click(function()
 	{
 		address = $("#myqrcode").val();
 		$("#frameId").css("z-index",2);
-		$("#frameId").attr("src","http://127.0.0.1:8000/qrcode/"+address+"");
+		$("#frameId").attr("src","http://http://www.yugougou.cn:8001/qrcode/"+address+"");
     })
 $(function(){  
     var $backToTopEle = $('.toTop'), $backToTopFun = function() {  

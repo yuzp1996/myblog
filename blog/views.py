@@ -14,6 +14,9 @@ from django.core.mail import send_mail
 # Create your views here.
 def get_blogs(request):
 
+    print 0
+    send_mail('test mail', 'Here is the message.', '1109791785@qq.com',['1109791785@qq.com'], fail_silently=False)
+    print 1
     ctx = {
         'blogs': Blog.objects.all().order_by('-created')
     }
@@ -22,10 +25,10 @@ def get_blogs(request):
 
  #创建二维码
 def generate_qrcode(request, data):
-
+    print 0
     send_mail('test mail', 'Here is the message.', '1109791785@qq.com',
     ['1109791785@qq.com'], fail_silently=False)
-
+    print 1
 
 
 

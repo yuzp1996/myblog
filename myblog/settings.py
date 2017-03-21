@@ -101,7 +101,7 @@ EMAIL_USE_TLS = False
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = '1109791785@qq.com'
-EMAIL_HOST_PASSWORD = 'lmeyriwprodghede'
+EMAIL_HOST_PASSWORD = 'shmpiqjphmjggcfg'
 DEFAULT_FROM_EMAIL = '1109791785@qq.com'
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

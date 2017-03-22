@@ -20,7 +20,7 @@
 <div class="header">
     <span><a href="{% url 'blog_get_blogs' %}">博客</a> - <a href="{% url 'blog_get_detail' blog.id %}">{{ blog.title }}</a></span>
 </div>
- 
+ {% load djangomarkdown %}
 <div class="content">
     <div class="blog">
         <div class="title">
@@ -32,7 +32,7 @@
             <span class="created" style="color: #6aa84f">{{ blog.created|date:"Y-m-d H:i" }}</span>
         </div>
         <div class="summary">
-            {{ blog.content }}
+            {{ blog.content |djangomarkdown}}
         </div>
     </div>
     <div class="comment">

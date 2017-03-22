@@ -3,38 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <title>鱼臭臭的博客(精简版)</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
     <link href="static/blog/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="static/blog/css/button.min.css" rel="stylesheet" type="text/css"/>
+    <link href="static/blog/css/styleh5shaow.css" rel="stylesheet" type="text/css"/>
+    <link href="static/blog/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+    <link href="http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
-<body>
+<body  style="background:url(/static/blog/img/Wood.jpg); " >
 
-<div class="header">
-    <h1>{% block header%}{%endblock%}</h1>
+
+<div class='toTop' style="opacity: 1;" title="返回顶部">  
+    <div class="arrow"></div>  
+    <div class="stick"></div>  
+</div>  
+
+<!-- <div class="header">
+    <h1>{% block header%}{%endblock%}</h1>      
+</div> -->
+<div style="position: absolute;z-index: 0">
+     <div  style="width: 1700px;height: 800px; background-color: #C27542; position:absolute;z-index: 0; ">
+    <!--      {% load staticfiles %}
+           <img src="{% static "blog/img/base.jpg" %}" alt="My image"/ class="index-img"> -->
+
+
+    <div style="padding-top: 30px; z-index: 10;position:absolute;">
+        <h1 ">鱼狗狗的创意工厂</h1>
+    </div> 
+
+      <iframe width="420" scrolling="no" height="60" frameborder="0" allowtransparency="true" src="http://i.tianqi.com/index.php?c=code&id=12&icon=1&num=5" style="padding-top: 200px;z-index: 10;position: absolute;padding-left: 100px" ></iframe>
+
+        <!--start button, nothing above this is necessary -->
+        <div id="beautbutton" style="margin-top: 500px; z-index:10;position:absolute; ">
+
+        <div class="svg-wrapper">
+          <svg height="40" width="150" xmlns="http://www.w3.org/2000/svg">
+            <rect id="shape" height="40" width="150" />
+            <div id="load">
+            <div id="text">
+              <a ><span class="spot"></span>二维码体验</a>
+            </div>
+            </div>
+          </svg>
+        </div>
+
+
+        <!--Next button -->
+        <div class="svg-wrapper">
+          <svg height="40" width="150" xmlns="http://www.w3.org/2000/svg">
+            <rect id="shape" height="40" width="150" />
+            <div id="load1">
+            <div id="text">
+              <a ><span class="spot"></span>分享即快乐</a>
+            </div>
+            </div>
+          </svg>
+        </div>
+        <!--Next button -->
+        <div class="svg-wrapper">
+          <svg height="40" width="150" xmlns="http://www.w3.org/2000/svg">
+            <rect id="shape" height="40" width="150" />
+            <div id="load2">
+            <div id="text">
+              <a ><span class="spot"></span>携手到共和</a>
+            </div>
+            </div>
+          </svg>
+        </div>
+        <!--End button -->
+        </div>
+      
+      <!-- <video src="/static/blog/img/myvedio.mp4" width="320" height="240" controls="controls" preload="auto"></video> -->
+      <div style="z-index: 5;position:absolute;">
+      <video src="/static/blog/img/sunraise.mp4" width="1520px" height="750px"  preload="auto" loop="loop" autoplay="autoplayutotoplay"></video>
+      </div>
+
+<!-- <embed width="320" height="240" src="/static/blog/img/sunraise.mp4" /> -->
 </div>
- <div  style="float: left; width: 250px;height: 1000px">
-     {% load staticfiles %}
-       <img src="{% static "blog/img/mygirl.jpg" %}" alt="My image"/ class="index-img">
-       <img src="{% static "blog/img/lovegirl.jpg" %}" alt="My image"/ >
 
 
-</div>
-{% load djangomarkdown %}
+<div id="mycontent" style="position:absolute;margin-top: 801px">
 
-{% for blog in blogs %}
-    <div class="blog"  style="float: right; border-left: 60%">
-        <div class="title">
-            <a href=" {% url 'blog_get_detail' blog.id %}"><h2>{{ blog.title }}</h2></a>
-        </div>
-        <div class="info">
-            <span class="category" style="color: #ff9900;">{{ blog.category.name }}</span>
-            <span class="author" style="color: #4a86e8">{{ blog.author }}</span>
-            <span class="created" style="color: #6aa84f">{{ blog.created|date:"Y-m-d H:i" }}</span>
-        </div>
-        <div class="summary" style="background-color: #4a86e8">
-            
-            {{ blog.content|djangomarkdown }}
-        </div>
+<div>
+    <div id="divDrcode" style="margin-top:0px;position: absolute;z-index: 1; padding: 80px 100px">
+<!--         <button class="button button-glow button-circle button-action button-jumbo"><i class="icon-camera-retro"></i></button> -->
+<!--         <i class="fa fa-camera-retro fa-lg"></i>
+        <i class="fa fa-camera-retro fa-5x"></i> -->
+        <button  id="qrcode" class="button button-glow button-rounded button-raised button-primary">二维码</button>
+        <input id="myqrcode" style="
+        width: 200px;height: 28px;    margin: 0;
+        padding: 10px 0;
+        border: 1px solid rgb(180, 180, 180);
+        border-radius: 8px;                /* 圆角边框 */
+        font-size: 16px;
+        text-align: center;" type="text" name="myqrcode" placeholder="   请输入网址" >
     </div>
-{% endfor %}
- 
+
+    <video src="/static/blog/img/good.mp4" width="1520px" height="750px"  preload="auto" loop="loop" autoplay="autoplayutotoplay" style="position: absolute;z-index: 0"></video>
+
+    <iframe  id="frameId" src="" style="width:300px;height:300px;margin-left: 30%;margin-top: 12%;position: absolute;z-index:-1;"scrolling="no"></iframe>
+
+
+</div>
+<div id="blog" style="margin-top: 800px">
+    {% load djangomarkdown %}
+
+    {% for blog in blogs %}
+        <div class="blog"  style="float: left; border-left: 60%;margin-top:60px">
+            <div class="title">
+                <a href=" {% url 'blog_get_detail' blog.id %}"><h2 style="color: #EE2C2C;">{{ blog.title }}</h2></a>
+            </div>
+            <div class="info" style="margin-top:30px;">
+                <span class="category" style="color: #780313;">{{ blog.category.name }}</span>
+                <span class="author" style="color: #4a86e8;">{{ blog.author }}</span>
+                <span class="created" style="color: #6aa84f;">{{ blog.created|date:"Y-m-d H:i" }}</span>
+            </div>
+            <div class="summary" style="background-color: #4a86e8">
+                
+                {{ blog.content|djangomarkdown }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+</div>
+
+<script type="text/javascript" src="/static/blog/js/base.js"></script>
+<script type="text/javascript" src="/static/blog/js/indexh5shaow.js"></script>
+
+</div>
 </body>
 </html>

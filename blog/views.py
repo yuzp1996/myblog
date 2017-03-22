@@ -8,8 +8,11 @@ from blog.forms import CommentForm
 import qrcode#二维码
 from cStringIO import StringIO#二维码
 
+from django.core.mail import send_mail
 
 
+send_mail('tesst', ' message.', '1109791785@qq.com',
+    ['1109791785@qq.com'], fail_silently=False)
 
 
 

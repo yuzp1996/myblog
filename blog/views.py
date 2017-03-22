@@ -23,10 +23,11 @@ def get_blogs(request):
  #创建二维码
 def generate_qrcode(request, data):
 
+    print 0
     send_mail('test mail', 'Here is the message.', '1109791785@qq.com',
     ['1109791785@qq.com'], fail_silently=False)
-
-
+    print send_mail
+    print 1
 
 
     img = qrcode.make(data)

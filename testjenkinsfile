@@ -1,124 +1,134 @@
-pipeline {
-  agent {
-    label 'java'
+pipeline{
+
+	
+
+	agent {label "java"}
+	environment{
+			ALAUDA_PROJECT = ""
+	}
+
+	options{
+		buildDiscarder(logRotator(numToKeepStr: '200'))
+	}
+
+	stages{
+		stage("clone"){
+
+	
+	steps{
+		script {
+  env.CODE_REPO = "http://192.168.122.73:31101/root/testpy"
+  env.CREDENTIAL_ID = "global-credentials-gitlabtoken22"
+  env.RELATIVE_DIRECTORY = "."
+  
+  env.BRANCH = "master"
+
+  def scmVars = checkout([
+    $class: 'GitSCM',
+    branches: [[name: "${BRANCH}"]],
+    extensions: [[
+      $class: 'SubmoduleOption',
+      recursiveSubmodules: true,
+      reference: '',
+    ],[
+      $class: 'RelativeTargetDirectory',
+      relativeTargetDir: "${RELATIVE_DIRECTORY}"
+    ]],
+    userRemoteConfigs: [[
+      credentialsId: "${CREDENTIAL_ID}",
+      url: "${CODE_REPO}"
+    ]]
+  ])
+
+  env.GIT_COMMIT = scmVars.GIT_COMMIT
+  env.GIT_BRANCH = scmVars.GIT_BRANCH
+  env.GIT_BRANCH_AS_TAG = scmVars.GIT_BRANCH.replaceFirst("origin/","").replaceAll("/","-")
+
+  
+}
+}
+}
+stage("maven"){
+
+	
+	steps{
+		script {
+  container('java'){
+    sh """mvn clean package"""
   }
-  stages {
-    stage('clone') {
-      steps {
-        script {
-          env.CODE_REPO = "http://192.168.122.73:31101/root/testpy"
-          env.CREDENTIAL_ID = "global-credentials-gitlabtoken22"
-          env.RELATIVE_DIRECTORY = "."
+}
+}
+}
+stage("build-docker"){
 
-          env.BRANCH = "master"
+	
+	steps{
+		script {
+    def retryCount = 3
+    def repositoryAddr = 'index.alauda.zp'.replace("http://","").replace("https://","")
+    env.IMAGE_REPO = repositoryAddr
 
-          def scmVars = checkout([
-            $class: 'GitSCM',
-            branches: [[name: "${BRANCH}"]],
-            extensions: [[
-              $class: 'SubmoduleOption',
-              recursiveSubmodules: true,
-              reference: '',
-            ],[
-              $class: 'RelativeTargetDirectory',
-              relativeTargetDir: "${RELATIVE_DIRECTORY}"
-            ]],
-            userRemoteConfigs: [[
-              credentialsId: "${CREDENTIAL_ID}",
-              url: "${CODE_REPO}"
-            ]]
-          ])
-
-          env.GIT_COMMIT = scmVars.GIT_COMMIT
-          env.GIT_BRANCH = scmVars.GIT_BRANCH
-          env.GIT_BRANCH_AS_TAG = scmVars.GIT_BRANCH.replaceFirst("origin/","").replaceAll("/","-")
-        }
-
-      }
-    }
-    stage('maven') {
-      steps {
-        script {
-          container('java'){
-            sh """mvn clean package"""
-          }
-        }
-
-      }
-    }
-    stage('build-docker') {
-      steps {
-        script {
-          def retryCount = 3
-          def repositoryAddr = 'index.alauda.zp'.replace("http://","").replace("https://","")
-          env.IMAGE_REPO = repositoryAddr
-
-          def credentialId = ''
-          credentialId = ""
-          dir(RELATIVE_DIRECTORY) {
-            container('tools'){
-              retry(retryCount) {
+    def credentialId = ''
+    credentialId = ""
+    dir(RELATIVE_DIRECTORY) {
+        container('tools'){
+            retry(retryCount) {
                 try{
-                  if (credentialId != '') {
-                    withCredentials([usernamePassword(credentialsId: "${credentialId}", passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
-                      sh "docker login ${IMAGE_REPO} -u ${USER} -p ${PASSWD}"
+                    if (credentialId != '') {
+                      withCredentials([usernamePassword(credentialsId: "${credentialId}", passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                        sh "docker login ${IMAGE_REPO} -u ${USER} -p ${PASSWD}"
+                        }
+                      }
                     }
-                  }
-                }
                 catch(err){
-                  alaudaDevops.withCluster() {
-                    def secretNamespace = "<no value>"
-                    def secretName = "<no value>"
-                    def secret = alaudaDevops.selector( "secret/${secretName}" )
-                    alaudaDevops.withProject( "${secretNamespace}" ) {
-                      def secretjson = secret.object().data['.dockerconfigjson']
-                      def dockerconfigjson = base64Decode("${secretjson}");
-                      writeFile file: 'config.json', text: dockerconfigjson
-                      sh """
-                      set +x
-                      mkdir -p ~/.docker
-                      mv -f config.json ~/.docker/config.json
-                      """
-                    }
-                  }
+                    alaudaDevops.withCluster() {
+                          def secretNamespace = "<no value>"
+                          def secretName = "<no value>"
+                          def secret = alaudaDevops.selector( "secret/${secretName}" )
+                          alaudaDevops.withProject( "${secretNamespace}" ) {
+                              def secretjson = secret.object().data['.dockerconfigjson']
+                              def dockerconfigjson = base64Decode("${secretjson}");
+                              writeFile file: 'config.json', text: dockerconfigjson
+                              sh """
+                                set +x
+                                mkdir -p ~/.docker
+                                mv -f config.json ~/.docker/config.json
+                              """
+                          }
+                      }
                 }
-                def tagswithcomma = "latest"
-                def tags = tagswithcomma.split(",")
-                def incubatorimage = "${IMAGE_REPO}:${tags[0]}"
-                sh " docker build -t ${incubatorimage} -f Dockerfile  ."
-                tags.each { tag ->
-                sh """
-                docker tag ${incubatorimage} ${IMAGE_REPO}:${tag}
-                docker push ${IMAGE_REPO}:${tag}
-                """
-              }
+                  def tagswithcomma = "latest"
+                  def tags = tagswithcomma.split(",")
+                  def incubatorimage = "${IMAGE_REPO}:${tags[0]}"
+                  sh " docker build -t ${incubatorimage} -f Dockerfile  ."
+                  tags.each { tag ->
+                    sh """
+                        docker tag ${incubatorimage} ${IMAGE_REPO}:${tag}
+                        docker push ${IMAGE_REPO}:${tag}
+                    """
+                  }
 
-              if (credentialId != '') {
-                sh "docker logout ${IMAGE_REPO}"
-              }
+                if (credentialId != '') {
+                    sh "docker logout ${IMAGE_REPO}"
+                }
             }
-          }
         }
-      }
-
     }
-  }
 }
-environment {
-  ALAUDA_PROJECT = ''
 }
-post {
-  always {
-    script {
-      echo "clean up workspace"
-      deleteDir()
-    }
+}
 
+	}
 
-  }
+	post{
+		always{
+	
+			script{
+				echo "clean up workspace"
+				deleteDir()
+			}
 
 }
-options {
-  buildDiscarder(logRotator(numToKeepStr: '200'))
-}
+
+	}
 }
